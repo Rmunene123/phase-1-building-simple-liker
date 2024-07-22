@@ -3,17 +3,46 @@ const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
+document.addEventListener("DOMContentLoaded", function () {
+  //adding an Event listener for clicking on empty heart
+  const emptyHeart = document.querySelector(".like-glyph");
+  emptyHeart.addEventListener("click", function () {
+    mimicServerCall()
+      .then(function () {
+        //Handling success response
+        emptyHeart.classList.add("activated-heart");
+        emptyHeart.classList.toggle("like-glyph");
+        emptyHeart.classList.toggle("activated-heart");
+      })
+      .catch(function () {
+        //Handling failure response
+        const errorModal = document.querySelector("#modal");
+        errorModal.classList.remove("hidden");
+        const errorMessage = document.querySelector("#modal-message");
+        errorMessage.textContent = "Random server error. Please try again.";
+        setTimeout(function () {
+          errorModal.classList.add("hidden");
+        }, 3000);
+      });
+  });
 
-
+  // adding an Event listener for clicking on full heart
+  const fullHeart = document.querySelector(".activated-heart");
+  fullHeart.addEventListener("click", function () {
+    fullHeart.classList.remove("activated-heart");
+    fullHeart.classList.toggle("like-glyph");
+    fullHeart.classList.toggle("activated-heart");
+  });
+});
 
 
 //------------------------------------------------------------------------------
 // Don't change the code below: this function mocks the server response
 //------------------------------------------------------------------------------
 
-function mimicServerCall(url="http://mimicServer.example.com", config={}) {
-  return new Promise(function(resolve, reject) {
-    setTimeout(function() {
+function mimicServerCall(url = "http://mimicServer.example.com", config = {}) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
       let isRandomFailure = Math.random() < .2
       if (isRandomFailure) {
         reject("Random server error. Try again.");
